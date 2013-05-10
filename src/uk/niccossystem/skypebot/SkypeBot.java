@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Properties;
 
 import uk.niccossystem.skypebot.hook.HookExecutor;
@@ -19,6 +20,7 @@ public class SkypeBot {
 	private static Properties settingsProperties;
 	private static final String author = "NiccosSystem";
 	private static final String version = "ALPHA 0.1";
+	private static HashMap<String, String> settings = new HashMap<String, String>();
 	
 	public static HookExecutor hooks = new HookExecutor();
 	
@@ -27,6 +29,7 @@ public class SkypeBot {
 		log("Starting up SkypeBot version " + version + ", created by " + author);
 		
 		checkForConfig();
+		storeSettings();
 		registerSkype();
 		
 		while(true) {
@@ -34,8 +37,16 @@ public class SkypeBot {
 		}
 	}
 	
+	private static void storeSettings() {
+		settings.put("commandPrefix", settingsProperties.getProperty("commandPrefix"));		
+	}
+
 	public static Properties getSettingsFile() {
 		return settingsProperties;
+	}
+	
+	public static String getSettingValue(String setting) {
+		return settings.get(setting);
 	}
 	
 	public static void log(String msg) {

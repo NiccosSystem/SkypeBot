@@ -27,7 +27,7 @@ public class BotMessageListener implements ChatMessageListener {
 	
 	public void handleMessage(ChatMessage cMessage) throws SkypeException {		
 		String message = cMessage.getContent();		
-		if (message.startsWith(SkypeBot.getSettingsFile().getProperty("commandPrefix"))) {
+		if (message.startsWith(SkypeBot.getSettingValue("commandPrefix"))) {
 			CommandHook cmdHook = new CommandHook(cMessage);
 			SkypeBot.hooks.callHook(cmdHook);
 		}		
