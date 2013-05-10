@@ -54,5 +54,10 @@
 	  <artifactId>skype-java-api</artifactId>
 	  <version>1.4</version>
 </dependency>
+<dependency>
+	  <groupId>net.visualillusionsent</groupId>
+	  <artifactId>viutils</artifactId>
+	  <version>1.0.4-SNAPSHOT</version>
+</dependency>
      </dependencies>
 </project>

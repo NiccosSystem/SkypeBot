@@ -1,15 +1,17 @@
 package uk.niccossystem.skypebot;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Properties;
 
+import net.visualillusionsent.utils.PropertiesFile;
+
+import uk.niccossystem.skypebot.command.CommandSystem;
 import uk.niccossystem.skypebot.hook.HookExecutor;
 import uk.niccossystem.skypebot.listener.*;
+import uk.niccossystem.skypebot.plugin.PluginLoader;
 
+import com.skype.ChatMessage;
 import com.skype.Skype;
 import com.skype.SkypeException;
 
@@ -17,69 +19,96 @@ public class SkypeBot {
 	
 	private static File configFolder;
 	private static File settingsFile;
-	private static Properties settingsProperties;
 	private static final String author = "NiccosSystem";
 	private static final String version = "ALPHA 0.1";
-	private static HashMap<String, String> settings = new HashMap<String, String>();
+	private static PropertiesFile settings;
+	private static File pluginsFolder;
+	private static HashMap<String, ArrayList<ChatMessage>> userMessages; 
+	private static String defaultPluginCFG;
+	private static PluginLoader pLoader;
 	
-	public static HookExecutor hooks = new HookExecutor();
+	public static HookExecutor hooks;
+	public static CommandSystem cmdSystem;
 	
 	public static void main(String[] args) throws InterruptedException {
+		initializeVariables();
 		
 		log("Starting up SkypeBot version " + version + ", created by " + author);
 		
-		checkForConfig();
-		storeSettings();
+		checkForDefFilesAndFolders();
+		handlePlugins();
 		registerSkype();
 		
 		while(true) {
 			Thread.sleep(20);
 		}
 	}
-	
-	private static void storeSettings() {
-		settings.put("commandPrefix", settingsProperties.getProperty("commandPrefix"));		
+
+	private static void initializeVariables() {
+		userMessages = new HashMap<String, ArrayList<ChatMessage>>();
+		defaultPluginCFG = "SkypeBotPlugin.cfg";
+		settings = new PropertiesFile("config/settings.cfg");
+		pluginsFolder = new File("plugins/");
+		configFolder = new File("config/");
+		settingsFile = new File(configFolder + File.separator + "settings.cfg");
+		
+		hooks = new HookExecutor();
+		cmdSystem = new CommandSystem();
+		
 	}
 
-	public static Properties getSettingsFile() {
-		return settingsProperties;
+	public static PropertiesFile getSettingsFile() {
+		return settings;
+	}
+	
+	public static String getDefaultPluginCFG() {
+		return defaultPluginCFG;
 	}
 	
 	public static String getSettingValue(String setting) {
-		return settings.get(setting);
+		return settings.getString(setting);
+	}
+	
+	private static void handlePlugins() {
+		pLoader = new PluginLoader();
+		pLoader.scanForPlugins();
+		pLoader.enableAllPlugins();
+	}
+	
+	public static HashMap<String, ArrayList<ChatMessage>> getUserMessages() {
+		return userMessages;
 	}
 	
 	public static void log(String msg) {
 		System.out.println(System.currentTimeMillis() + " " + msg);
 	}
 	
-	private static void checkForConfig() {
-		try {
-			configFolder = new File("config/");
-			if (!configFolder.isDirectory()) {
-				log("config/ is not a directory! Creating it...");
-				configFolder.mkdir();
-				log("Folder config/ created.");
-			}
-			
-			settingsFile = new File(configFolder + File.separator + "settings.cfg");
-			if (!settingsFile.exists()) {
-				log("config/settings.cfg does not exist! Creating it...");
-				Properties props = new Properties();
-				props.setProperty("commandPrefix", "]");
-				props.store(new FileOutputStream(configFolder + File.separator + "settings.cfg"), null);
-				log("File config/settings.cfg created");
-			}
-			settingsProperties = new Properties();
-			settingsProperties.load(new FileInputStream(configFolder + File.separator + "settings.cfg"));
-		} catch (IOException e) {
-			e.printStackTrace();
+	private static void checkForDefFilesAndFolders() {
+		if (!configFolder.isDirectory()) {
+			log("config/ is not a directory! Creating it...");
+			configFolder.mkdir();
+			log("Folder config/ created.");
+		}
+		
+		if (!settingsFile.exists()) {
+			log("config/settings.cfg does not exist! Creating it...");
+			settings.getString("commandPrefix", "]");
+			settings.save();
+			log("File config/settings.cfg created");
+		}
+		settings = new PropertiesFile("config/settings.cfg");
+		
+		if (!pluginsFolder.isDirectory()) {
+			log("plugins/ is not a directory! Creating it...");
+			pluginsFolder.mkdir();
+			log("Folder plugins/ created.");
 		}
 	}
 	
+	public static File getPluginsFolder(){ return pluginsFolder; }
+	
 	private static void registerSkype() {
-		try {
-			
+		try {			
 			Skype.addChatMessageListener(new BotMessageListener());
 			log("Registered MessageListener!");
 			

@@ -26,12 +26,12 @@ public class CommandHook extends Hook {
 		chat = cMsg.getChat();
 		date = cMsg.getTime();
 		message = cMsg;
-		command = cMsg.getContent().split(" ")[0].trim().substring(1);
+		command = cMsg.getContent().split(" ")[0].trim().substring(1, cMsg.getContent().split(" ")[0].length());
 	}
 	
 	private String[] convertToParams(String message) {
 		if (message.split(" ").length == 1) return new String[] { "" };
-		return message.substring(message.split(" ").length + 1).split(" ");
+		return message.substring(message.split(" ")[0].length() + 1).split(" ");
 	}
 	
 	public String[] getParameters() {

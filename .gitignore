@@ -2,6 +2,7 @@ config/
 target/
 .settings/
 bin/
+plugins/
 
 .gitattributes
 .classpath
