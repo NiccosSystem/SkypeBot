@@ -7,6 +7,7 @@ import com.skype.ChatMessage;
 import com.skype.SkypeException;
 import com.skype.User;
 
+import uk.niccossystem.skypebot.SkypeBot;
 import uk.niccossystem.skypebot.hook.Hook;
 
 public class CommandHook extends Hook {
@@ -26,7 +27,7 @@ public class CommandHook extends Hook {
 		chat = cMsg.getChat();
 		date = cMsg.getTime();
 		message = cMsg;
-		command = cMsg.getContent().split(" ")[0].trim().substring(1, cMsg.getContent().split(" ")[0].length());
+		command = cMsg.getContent().split(" ")[0].trim().substring(SkypeBot.getSettingValue("commandPrefix").length(), cMsg.getContent().split(" ")[0].length());
 	}
 	
 	private String[] convertToParams(String message) {
