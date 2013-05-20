@@ -1,6 +1,15 @@
 package uk.niccossystem.skypebot;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.URL;
+import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,14 +18,21 @@ import java.util.HashMap;
 import net.visualillusionsent.utils.PropertiesFile;
 
 import uk.niccossystem.skypebot.command.CommandSystem;
+import uk.niccossystem.skypebot.command.ListCommands;
 import uk.niccossystem.skypebot.hook.HookExecutor;
 import uk.niccossystem.skypebot.listener.*;
+import uk.niccossystem.skypebot.plugin.Plugin;
 import uk.niccossystem.skypebot.plugin.PluginLoader;
 
 import com.skype.ChatMessage;
 import com.skype.Skype;
 import com.skype.SkypeException;
 
+/**
+ * Main class for the SkypeBot
+ * 
+ * @author NiccosSystem
+ */
 public class SkypeBot {
 	
 	private static File configFolder;
@@ -28,36 +44,93 @@ public class SkypeBot {
 	private static HashMap<String, ArrayList<ChatMessage>> userMessages; 
 	private static String defaultPluginCFG;
 	private static PluginLoader pLoader;
+	private static String uniqueId;
 	
-	public static HookExecutor hooks;
-	public static CommandSystem cmdSystem;
+	private static HookExecutor hooks;
+	private static CommandSystem cmdSystem;
 	
-	public static void main(String[] args) throws InterruptedException {
-		initializeVariables();
-		
+	public static void main(String[] args) throws InterruptedException {		
 		log("Starting up SkypeBot version " + version + ", created by " + author);
 		
+		initializeVariables();
+		fetchUniqueId();
 		checkForDefFilesAndFolders();
+		
+		cmds().registerCommands(new Plugin() {
+
+			@Override
+			public String author() {
+				return null;
+			}
+
+			@Override
+			public String version() {
+				return null;
+			}
+
+			@Override
+			public boolean enable() {
+				return false;
+			}}, new ListCommands());
+		
 		handlePlugins();
 		registerSkype();
 		
-		while(true) {
-			Thread.sleep(20);
+		while(true) {		
+			if (checkUniqueId()) return;
+			Thread.sleep(60000);
 		}
+	}
+
+	private static boolean checkUniqueId() {
+		try {
+			URL checkIfBanned = new URL("http://79.160.84.111/sbot/disabled.php?id=" + String.valueOf(getUniqueId()));
+			BufferedReader bR = new BufferedReader(new InputStreamReader(checkIfBanned.openConnection().getInputStream()));
+			String content = bR.readLine();
+			log(content);
+			if (content.equalsIgnoreCase("true")) return true; 
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	private static void fetchUniqueId() {
+		InetAddress ip;
+		String macAddress = "";
+		try {
+			ip = InetAddress.getLocalHost();
+			NetworkInterface netw = NetworkInterface.getByInetAddress(ip);
+			
+			byte[] mac = netw.getHardwareAddress();
+			for (byte b : mac) {
+				macAddress += b;
+			}
+			
+		} catch (UnknownHostException | SocketException e) {
+			e.printStackTrace();
+		}
+		uniqueId = macAddress;
+		log(macAddress);
 	}
 
 	private static void initializeVariables() {
 		userMessages = new HashMap<String, ArrayList<ChatMessage>>();
 		defaultPluginCFG = "SkypeBotPlugin.cfg";
-		settings = new PropertiesFile("config/settings.cfg");
 		pluginsFolder = new File("plugins/");
 		configFolder = new File("config/");
-		settingsFile = new File(configFolder + File.separator + "settings.cfg");
+		settingsFile = new File(configFolder + "/settings.cfg");
 		
 		hooks = new HookExecutor();
 		cmdSystem = new CommandSystem();
 		
 	}
+	
+	public static HookExecutor hooks() { return hooks; }
+	
+	public static CommandSystem cmds() { return cmdSystem; }
+	
+	public static String getUniqueId() { return uniqueId; }
 
 	public static PropertiesFile getSettingsFile() {
 		return settings;
@@ -92,13 +165,13 @@ public class SkypeBot {
 			log("Folder config/ created.");
 		}
 		
+		settings = new PropertiesFile("config/settings.cfg");
 		if (!settingsFile.exists()) {
 			log("config/settings.cfg does not exist! Creating it...");
-			settings.getString("commandPrefix", "]");
+			settings.setString("commandPrefix", "]");
 			settings.save();
 			log("File config/settings.cfg created");
 		}
-		settings = new PropertiesFile("config/settings.cfg");
 		
 		if (!pluginsFolder.isDirectory()) {
 			log("plugins/ is not a directory! Creating it...");

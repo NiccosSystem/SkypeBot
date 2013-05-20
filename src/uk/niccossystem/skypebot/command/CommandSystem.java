@@ -1,33 +1,72 @@
 package uk.niccossystem.skypebot.command;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 
 import uk.niccossystem.skypebot.SkypeBot;
 import uk.niccossystem.skypebot.plugin.Plugin;
+import uk.niccossystem.skypebot.plugin.PluginListener;
 
+/**
+ * The command system.
+ * 
+ * @author NiccosSystem
+ *
+ */
 public class CommandSystem {
-	private static HashMap<String, String> registeredCommands = new HashMap<String, String>();
-	private static HashMap<String, Plugin> commandPluginRegister = new HashMap<String, Plugin>();
 	
-	public HashMap<String, String> getRegisteredCommands() {
-		return registeredCommands;
+	private HashMap<String, BotCommand> commands = new HashMap<String, BotCommand>();
+	
+	public boolean executeCommand(CommandContainer cContainer) {
+		if (!commands.containsKey(cContainer.getCommand())) return false;
+		BotCommand cmd = commands.get(cContainer.getCommand());
+		cmd.execute(cContainer);
+		
+		return false;
 	}
 	
-	public String getCommandHelpText(String command) {
-		return registeredCommands.get(command);
-	}
-	
-	public boolean registerCommand(Plugin plugin, String command, String helpText) {
-		if (registeredCommands.containsKey(command)) {
-			if (commandPluginRegister.containsKey(command)) {
-				SkypeBot.log("Command \"" + command + "\" is already registered by plugin + " + plugin.getName() + "! Possible command conflict?");
-				return false;
+	/**
+	 * Register a command. Returns false if it fails.
+	 * 
+	 * @param plugin
+	 * @param listener
+	 * @return
+	 */
+	public void registerCommands(Plugin plugin, final CommandListener listener) {
+		Method[] methods = listener.getClass().getDeclaredMethods();
+		
+		for (final Method method : methods) {
+			if (!method.isAnnotationPresent(Command.class)) continue;
+			
+			Command anno = method.getAnnotation(Command.class);
+			Class<?>[] params = method.getParameterTypes();
+			
+			if (params.length != 1) {
+				SkypeBot.log("Command method " + method.getName() + " in plugin " + plugin.getName() + " has too many/little parameters!");
+				continue;
 			}
-			SkypeBot.log("Command \"" + command + "\" is in registeredCommands but not commandPluginRegister? WTF?");
+			
+			BotCommand cmd = new BotCommand(anno) {
+				@Override
+				public void execute(CommandContainer cmdContainer) {
+					try {
+						method.invoke(listener, cmdContainer);
+					} catch (IllegalAccessException | IllegalArgumentException
+							| InvocationTargetException e) {
+						e.printStackTrace();
+					}					
+				}				
+			};			
+			commands.put(anno.name(), cmd);
 		}
-		registeredCommands.put(command, helpText);
-		commandPluginRegister.put(command, plugin);
-		SkypeBot.log("Registered command \"" + command + "\" by plugin \"" + plugin.getName() + "\"!");
-		return true;
+	}
+	
+	public HashMap<String, String> getCommands() {
+		HashMap<String, String> cmds = new HashMap<String, String>();
+		for (BotCommand b : commands.values()) {
+			cmds.put(b.getCommandAnno().name(), b.getCommandAnno().help());
+		}
+		return cmds;
 	}
 }

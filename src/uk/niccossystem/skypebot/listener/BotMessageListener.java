@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import uk.niccossystem.skypebot.SkypeBot;
 import uk.niccossystem.skypebot.hook.command.CommandHook;
+import uk.niccossystem.skypebot.command.CommandContainer;
 import uk.niccossystem.skypebot.command.ListCommands;
 
 import com.skype.ChatMessage;
@@ -38,20 +39,25 @@ public class BotMessageListener implements ChatMessageListener {
 		}		
 		
 		if (message.startsWith(SkypeBot.getSettingValue("commandPrefix"))) {
-			CommandHook cmdHook = new CommandHook(cMessage);
-			if (callNativeCommands(cmdHook)) return;
-			SkypeBot.hooks.callHook(cmdHook);
-		}		
+			CommandContainer cC = new CommandContainer(cMessage);
+			SkypeBot.cmds().executeCommand(cC);
+		}	
 	}
 
-	private boolean callNativeCommands(CommandHook cmdHook) {
-		switch (cmdHook.getCommand()) {
-		case "listcommands":
-			ListCommands.onCommand(cmdHook);
-			return true;
-		default:
-			break;
-		}
-		return false;
-	}		
+//	private boolean callNativeCommands(CommandHook cmdHook) {
+//		switch (cmdHook.getCommand()) {
+//		case "listcommands":
+//			ListCommands.onCommand(cmdHook);
+//			return true;
+//		case "unq":
+//			try {
+//				cmdHook.getChat().send(SkypeBot.getUniqueId());
+//			} catch (SkypeException e) {
+//				e.printStackTrace();
+//			}
+//		default:
+//			break;
+//		}
+//		return false;
+//	}		
 }

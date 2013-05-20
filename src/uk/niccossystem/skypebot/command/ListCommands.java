@@ -1,32 +1,27 @@
 package uk.niccossystem.skypebot.command;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
-import com.skype.Chat;
 import com.skype.SkypeException;
 
 import uk.niccossystem.skypebot.SkypeBot;
-import uk.niccossystem.skypebot.hook.HookHandler;
-import uk.niccossystem.skypebot.hook.command.CommandHook;
-import uk.niccossystem.skypebot.plugin.PluginListener;
 
-public class ListCommands implements PluginListener {
-	@HookHandler
-	public static void onCommand(CommandHook hook) {
-		switch(hook.getCommand()) {
-		case "listcommands":
-			listCommands(hook.getChat());
-		}
-	}
-	
-	public static void listCommands(Chat chat) {
-		String commandList = "Available commands:\n";
-		ArrayList<String> commands = new ArrayList<String>(SkypeBot.cmdSystem.getRegisteredCommands().keySet());
-		for (String command : commands) {
-			commandList += command + ": " + SkypeBot.cmdSystem.getCommandHelpText(command) + "\n";
+/**
+ * A command to list all registered commands.
+ * 
+ * @author NiccosSystem
+ *
+ */
+public class ListCommands implements CommandListener {
+	@Command(help = "List all commands", name = "commands")
+	public void list(CommandContainer cC) {
+		HashMap<String, String> commands = SkypeBot.cmds().getCommands();
+		String help = "Commands: (Command prefix is " + SkypeBot.getSettingValue("commandPrefix") + ")\n";
+		for (String cmd : commands.keySet()) {
+			help += cmd + " - " + commands.get(cmd) + "\n";
 		}
 		try {
-			chat.send(commandList);
+			cC.getChat().send(help);
 		} catch (SkypeException e) {
 			e.printStackTrace();
 		}
