@@ -2,6 +2,11 @@ package uk.niccossystem.skypebot.plugin;
 
 import java.net.URLClassLoader;
 
+import uk.niccossystem.skypebot.SkypeBot;
+
+import com.skype.Chat;
+import com.skype.SkypeException;
+
 import net.visualillusionsent.utils.PropertiesFile;
 
 public abstract class Plugin {
@@ -41,5 +46,13 @@ public abstract class Plugin {
 		loader = jarLoader;
 		props = propFile;
 		jarName = newJarName;
+	}
+	
+	public void chat(Chat c, String m) {
+		try {
+			c.send(SkypeBot.getSettingValue("skypeBotPrefix") + " " + m);
+		} catch (SkypeException e) {
+			e.printStackTrace();
+		}
 	}
 }

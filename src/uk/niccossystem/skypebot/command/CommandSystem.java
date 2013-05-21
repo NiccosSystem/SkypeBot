@@ -4,6 +4,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
+import com.skype.SkypeException;
+
 import uk.niccossystem.skypebot.SkypeBot;
 import uk.niccossystem.skypebot.plugin.Plugin;
 import uk.niccossystem.skypebot.plugin.PluginListener;
@@ -18,14 +20,21 @@ public class CommandSystem {
 	
 	private HashMap<String, BotCommand> commands = new HashMap<String, BotCommand>();
 	
-	public boolean executeCommand(CommandContainer cContainer) {
-		if (!commands.containsKey(cContainer.getCommand())) return false;
+	public void executeCommand(CommandContainer cContainer) {
+		if (!commands.containsKey(cContainer.getCommand())) {
+			commandNotFound(cContainer);
+			return;
+		}
 		BotCommand cmd = commands.get(cContainer.getCommand());
 		cmd.execute(cContainer);
-		
-		return false;
+		return;
 	}
 	
+	private void commandNotFound(CommandContainer c) {
+		SkypeBot.chat(c.getChat(), "Command not found! Do " + SkypeBot.getSettingValue("commandPrefix") + "commands to see a list of commands.");
+		return;
+	}
+
 	/**
 	 * Register a command. Returns false if it fails.
 	 * 

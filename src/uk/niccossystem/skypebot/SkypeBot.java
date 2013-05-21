@@ -19,11 +19,13 @@ import net.visualillusionsent.utils.PropertiesFile;
 
 import uk.niccossystem.skypebot.command.CommandSystem;
 import uk.niccossystem.skypebot.command.ListCommands;
+import uk.niccossystem.skypebot.command.NativeCommands;
 import uk.niccossystem.skypebot.hook.HookExecutor;
 import uk.niccossystem.skypebot.listener.*;
 import uk.niccossystem.skypebot.plugin.Plugin;
 import uk.niccossystem.skypebot.plugin.PluginLoader;
 
+import com.skype.Chat;
 import com.skype.ChatMessage;
 import com.skype.Skype;
 import com.skype.SkypeException;
@@ -55,24 +57,7 @@ public class SkypeBot {
 		initializeVariables();
 		fetchUniqueId();
 		checkForDefFilesAndFolders();
-		
-		cmds().registerCommands(new Plugin() {
-
-			@Override
-			public String author() {
-				return null;
-			}
-
-			@Override
-			public String version() {
-				return null;
-			}
-
-			@Override
-			public boolean enable() {
-				return false;
-			}}, new ListCommands());
-		
+		new NativeCommands().enable();
 		handlePlugins();
 		registerSkype();
 		
@@ -169,6 +154,7 @@ public class SkypeBot {
 		if (!settingsFile.exists()) {
 			log("config/settings.cfg does not exist! Creating it...");
 			settings.setString("commandPrefix", "]");
+			settings.setString("skypeBotPrefix", "[SkypeBot]");
 			settings.save();
 			log("File config/settings.cfg created");
 		}
@@ -194,6 +180,14 @@ public class SkypeBot {
 			log("Registered CallListener!");
 		} catch (SkypeException e) {
 			
+			e.printStackTrace();
+		}
+	}
+	
+	public static void chat(Chat c, String m) {
+		try {
+			c.send(SkypeBot.getSettingValue("skypeBotPrefix") + " " + m);
+		} catch (SkypeException e) {
 			e.printStackTrace();
 		}
 	}
