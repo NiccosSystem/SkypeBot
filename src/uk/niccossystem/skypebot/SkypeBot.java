@@ -88,8 +88,9 @@ public class SkypeBot {
 			NetworkInterface netw = NetworkInterface.getByInetAddress(ip);
 			
 			byte[] mac = netw.getHardwareAddress();
-			if (mac == null) break;
+			
 			for (byte b : mac) {
+				if (mac == null) break;
 				macAddress += b;
 			}
 			
