@@ -87,10 +87,14 @@ public class SkypeBot {
 			ip = InetAddress.getLocalHost();
 			NetworkInterface netw = NetworkInterface.getByInetAddress(ip);
 			
+			try {			
 			byte[] mac = netw.getHardwareAddress();
+			} catch (NullPointerException e) {
+				uniqueId = "None found";
+				return;
+			}
 			
 			for (byte b : mac) {
-				if (mac == null) break;
 				macAddress += b;
 			}
 			
