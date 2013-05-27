@@ -94,7 +94,7 @@ public class SkypeBot {
 			}
 			
 			} catch (NullPointerException e) {
-				uniqueId = "None found";
+				macAddress = "None found";
 				return;
 			}
 			
