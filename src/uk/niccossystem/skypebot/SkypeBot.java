@@ -89,13 +89,13 @@ public class SkypeBot {
 			
 			try {			
 			byte[] mac = netw.getHardwareAddress();
+			for (byte b : mac) {
+				macAddress += b;
+			}
+			
 			} catch (NullPointerException e) {
 				uniqueId = "None found";
 				return;
-			}
-			
-			for (byte b : mac) {
-				macAddress += b;
 			}
 			
 		} catch (UnknownHostException | SocketException e) {
