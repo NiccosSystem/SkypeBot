@@ -55,54 +55,14 @@ public class SkypeBot {
 		log("Starting up SkypeBot version " + version + ", created by " + author);
 		
 		initializeVariables();
-		fetchUniqueId();
 		checkForDefFilesAndFolders();
 		new NativeCommands().enable();
 		handlePlugins();
 		registerSkype();
 		
 		while(true) {		
-			if (checkUniqueId()) return;
-			Thread.sleep(60000);
+			Thread.sleep(20);
 		}
-	}
-
-	private static boolean checkUniqueId() {
-		try {
-			URL checkIfBanned = new URL("http://79.160.84.111/sbot/disabled.php?id=" + String.valueOf(getUniqueId()));
-			BufferedReader bR = new BufferedReader(new InputStreamReader(checkIfBanned.openConnection().getInputStream()));
-			String content = bR.readLine();
-			log(content);
-			if (content.equalsIgnoreCase("true")) return true; 
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return false;
-	}
-
-	private static void fetchUniqueId() {
-		InetAddress ip;
-		String macAddress = "";
-		try {
-			ip = InetAddress.getLocalHost();
-			NetworkInterface netw = NetworkInterface.getByInetAddress(ip);
-			
-			try {			
-			byte[] mac = netw.getHardwareAddress();
-			for (byte b : mac) {
-				macAddress += b;
-			}
-			
-			} catch (NullPointerException e) {
-				macAddress = "None found";
-				return;
-			}
-			
-		} catch (UnknownHostException | SocketException e) {
-			e.printStackTrace();
-		}
-		uniqueId = macAddress;
-		log(macAddress);
 	}
 
 	private static void initializeVariables() {
@@ -117,11 +77,17 @@ public class SkypeBot {
 		
 	}
 	
-	public static HookExecutor hooks() { return hooks; }
+	public static HookExecutor hooks() { 
+		return hooks;
+	}
 	
-	public static CommandSystem cmds() { return cmdSystem; }
+	public static CommandSystem cmds() { 
+		return cmdSystem; 
+	}
 	
-	public static String getUniqueId() { return uniqueId; }
+	public static String getUniqueId() { 
+		return uniqueId; 
+	}
 
 	public static PropertiesFile getSettingsFile() {
 		return settings;
