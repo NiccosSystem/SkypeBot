@@ -86,7 +86,8 @@ public class PluginLoader {
 			
 			plugins.add(plugin);			
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-			SkypeBot.log("Something went wrong while activating plugin " + pluginName + "! " + e.getMessage());
+			SkypeBot.log("Something went wrong while activating plugin " + pluginName + "!");
+			e.printStackTrace();
 		}		
 		return true;
 	}
