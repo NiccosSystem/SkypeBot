@@ -3,6 +3,7 @@ package uk.niccossystem.skypebot.listener;
 import java.util.ArrayList;
 
 import uk.niccossystem.skypebot.SkypeBot;
+import uk.niccossystem.skypebot.hook.chat.ChatHook;
 import uk.niccossystem.skypebot.hook.command.CommandHook;
 import uk.niccossystem.skypebot.command.CommandContainer;
 import uk.niccossystem.skypebot.command.ListCommands;
@@ -41,7 +42,10 @@ public class BotMessageListener implements ChatMessageListener {
 		if (message.startsWith(SkypeBot.getSettingValue("commandPrefix"))) {
 			CommandContainer cC = new CommandContainer(cMessage);
 			SkypeBot.cmds().executeCommand(cC);
-		}	
+			return;
+		}
+		ChatHook cH = new ChatHook(cMessage);
+		SkypeBot.hooks().callHook(cH);
 	}
 
 //	private boolean callNativeCommands(CommandHook cmdHook) {
