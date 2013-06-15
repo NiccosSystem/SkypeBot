@@ -1,6 +1,9 @@
 SkypeBotRecode
 ==============
 
+![Builds](http://ci.larry1123.net/job/SkypeBotRecode/badge/icon)
+Jenkins builds: http://ci.larry1123.net/job/SkypeBotRecode
+
 A recode of my SkypeBot.
 
 This recode includes plugin functionality, where plugins can listen to different hooks. It also has a easy-to-use command system.
