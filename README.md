@@ -2,7 +2,7 @@ SkypeBotRecode
 ==============
 
 ![Builds](http://ci.larry1123.net/job/SkypeBotRecode/badge/icon)
-Jenkins builds: http://ci.larry1123.net/job/SkypeBotRecode
+Jenkins builds: http://ci.larry1123.net/job/SkypeBotRecode (Big thanks to Larry1123 for hosting my project on his build server)
 
 A recode of my SkypeBot.
 
