@@ -3,6 +3,13 @@ package uk.niccossystem.skypebot.plugin;
 import uk.niccossystem.skypebot.hook.Hook;
 import uk.niccossystem.skypebot.hook.HookDispatcher;
 
+/**
+ * Contains information about a PluginListener, like
+ * its owner (Plugin) and its HookDispatcher 
+ * 
+ * @author NiccosSystem
+ *
+ */
 public class RegisteredPluginListener {
 	
 	private PluginListener listener;

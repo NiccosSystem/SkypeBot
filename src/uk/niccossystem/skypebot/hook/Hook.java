@@ -1,7 +1,7 @@
 package uk.niccossystem.skypebot.hook;
 
 /**
- * Base Hook class. Extend this to make new classes!
+ * To make hooks, extend this class.
  * 
  * @author NiccosSystem
  *

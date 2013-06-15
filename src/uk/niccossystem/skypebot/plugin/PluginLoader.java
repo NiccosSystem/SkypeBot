@@ -11,6 +11,12 @@ import net.visualillusionsent.utils.PropertiesFile;
 
 import uk.niccossystem.skypebot.SkypeBot;
 
+/**
+ * Loads plugins in the plugins folder.
+ * 
+ * @author NiccosSystem
+ *
+ */
 public class PluginLoader {
 	private ArrayList<Plugin> plugins;
 	private ArrayList<String> pluginsToLoad;

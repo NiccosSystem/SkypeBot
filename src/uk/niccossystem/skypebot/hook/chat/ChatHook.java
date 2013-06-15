@@ -7,60 +7,79 @@ import com.skype.User;
 
 import uk.niccossystem.skypebot.hook.Hook;
 
+/**
+ * A hook that contains information about a message.
+ * Is called when a message is not a command.
+ * 
+ * @author NiccosSystem
+ *
+ */
 public class ChatHook extends Hook {
 	private Chat chat;
-	private ChatMessage message;
-	private String message2;
+	private ChatMessage chatMessage;
+	private String message;
 	private User sender;
-	private String senderName;
+	private String senderDisplayName;
 	
 	public ChatHook(ChatMessage m) throws SkypeException {
-		setChat(m.getChat());
-		setMessage(m);
-		setMessage2(m.getContent());
-		setSender(m.getSender());
-		setSenderName(m.getSenderDisplayName());
+		chat = m.getChat();
+		chatMessage = m;
+		message = m.getContent();
+		sender = m.getSender();
+		senderDisplayName = m.getSenderDisplayName();
 	}
-
+	
+	/**
+	 * Get the chat from where the message was sent from
+	 * 
+	 * @return the chat
+	 */
 	public Chat getChat() {
 		return chat;
 	}
-
-	public void setChat(Chat chat) {
-		this.chat = chat;
+	
+	/**
+	 * Get the ChatMessage object
+	 * 
+	 * @return the message
+	 */
+	public ChatMessage getChatMessage() {
+		return chatMessage;
 	}
-
-	public ChatMessage getMessage() {
+	
+	/**
+	 * Get the message's content
+	 * 
+	 * @return the message content
+	 */
+	public String getMessage() {
 		return message;
 	}
-
-	public void setMessage(ChatMessage message) {
-		this.message = message;
+	
+	/**
+	 * Set the message's content
+	 * 
+	 * @param msg New content of the message
+	 */
+	public void setMessage(String msg) {
+		this.message = msg;
 	}
-
-	public String getMessage2() {
-		return message2;
-	}
-
-	public void setMessage2(String message2) {
-		this.message2 = message2;
-	}
-
+	
+	/**
+	 * Get the user who sent the message
+	 * 
+	 * @return the sender
+	 */
 	public User getSender() {
 		return sender;
 	}
-
-	public void setSender(User sender) {
-		this.sender = sender;
-	}
-
-	public String getSenderName() {
-		return senderName;
-	}
-
-	public void setSenderName(String senderName) {
-		this.senderName = senderName;
-	}
 	
-	
+	/**
+	 * Get the sender's display name
+	 * 
+	 * @return the sender's display name
+	 */
+	public String getSenderDisplayName() {
+		return senderDisplayName;
+	}
 }

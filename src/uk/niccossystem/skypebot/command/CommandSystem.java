@@ -11,7 +11,7 @@ import uk.niccossystem.skypebot.plugin.Plugin;
 import uk.niccossystem.skypebot.plugin.PluginListener;
 
 /**
- * The command system.
+ * Handles execution of commands, bot-wide
  * 
  * @author NiccosSystem
  *

@@ -1,7 +1,8 @@
 package uk.niccossystem.skypebot.command;
 
 /**
- * Interface for command classes
+ * Interface for command classes.
+ * All classes containing commands should implement this.
  * 
  * @author NiccosSystem
  *

@@ -9,6 +9,12 @@ import com.skype.SkypeException;
 
 import net.visualillusionsent.utils.PropertiesFile;
 
+/**
+ * The base plugin class. Extend this in your main plugin class.
+ * 
+ * @author NiccosSystem
+ *
+ */
 public abstract class Plugin {
 	public abstract String author();
 	public abstract String version();

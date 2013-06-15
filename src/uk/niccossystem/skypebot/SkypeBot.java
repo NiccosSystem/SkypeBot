@@ -1,15 +1,6 @@
 package uk.niccossystem.skypebot;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.InetAddress;
-import java.net.MalformedURLException;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.URL;
-import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,11 +9,9 @@ import java.util.HashMap;
 import net.visualillusionsent.utils.PropertiesFile;
 
 import uk.niccossystem.skypebot.command.CommandSystem;
-import uk.niccossystem.skypebot.command.ListCommands;
 import uk.niccossystem.skypebot.command.NativeCommands;
 import uk.niccossystem.skypebot.hook.HookExecutor;
 import uk.niccossystem.skypebot.listener.*;
-import uk.niccossystem.skypebot.plugin.Plugin;
 import uk.niccossystem.skypebot.plugin.PluginLoader;
 
 import com.skype.Chat;
@@ -31,7 +20,7 @@ import com.skype.Skype;
 import com.skype.SkypeException;
 
 /**
- * Main class for the SkypeBot
+ * Main class for the SkypeBot, the heart of it all
  * 
  * @author NiccosSystem
  */
@@ -46,11 +35,16 @@ public class SkypeBot {
 	private static HashMap<String, ArrayList<ChatMessage>> userMessages; 
 	private static String defaultPluginCFG;
 	private static PluginLoader pLoader;
-	private static String uniqueId;
 	
 	private static HookExecutor hooks;
 	private static CommandSystem cmdSystem;
 	
+	/**
+	 * The heart of it all.. Basically runs a few methods then loops forever :P
+	 * 
+	 * @param args
+	 * @throws InterruptedException
+	 */
 	public static void main(String[] args) throws InterruptedException {		
 		log("Starting up SkypeBot version " + version + ", created by " + author);
 		
@@ -64,7 +58,11 @@ public class SkypeBot {
 			Thread.sleep(20);
 		}
 	}
-
+	
+	/**
+	 * Initialize all needed variables
+	 *  
+	 */
 	private static void initializeVariables() {
 		userMessages = new HashMap<String, ArrayList<ChatMessage>>();
 		defaultPluginCFG = "SkypeBotPlugin.cfg";
@@ -77,44 +75,85 @@ public class SkypeBot {
 		
 	}
 	
+	/**
+	 * Get the bot's HookExecutor
+	 * 
+	 * @return the hook executor
+	 */
 	public static HookExecutor hooks() { 
 		return hooks;
 	}
 	
+	/**
+	 * Get the bot's CommandSystem
+	 * 
+	 * @return the command system
+	 */
 	public static CommandSystem cmds() { 
 		return cmdSystem; 
 	}
 	
-	public static String getUniqueId() { 
-		return uniqueId; 
-	}
-
+	/**
+	 * Get the bot's settings file (config/settings.cfg)
+	 * 
+	 * @return the settings file
+	 */
 	public static PropertiesFile getSettingsFile() {
 		return settings;
 	}
 	
+	/** 
+	 * Get the default plugin cfg filename. (lolwat might remove this)
+	 * 
+	 * @return the default plugin cfg filename
+	 */
 	public static String getDefaultPluginCFG() {
 		return defaultPluginCFG;
 	}
 	
+	/**
+	 * Get a setting's value from settings.cfg
+	 * 
+	 * @param setting
+	 * @return the wanted setting's value
+	 */
 	public static String getSettingValue(String setting) {
 		return settings.getString(setting);
 	}
 	
+	/**
+	 * Executes some methods to handle plugin loading and enabling
+	 * 
+	 */
 	private static void handlePlugins() {
 		pLoader = new PluginLoader();
 		pLoader.scanForPlugins();
 		pLoader.enableAllPlugins();
 	}
 	
+	/**
+	 * Get a user's messages (I don't think this is implemented yet)
+	 * 
+	 * @return a user's messages
+	 */
 	public static HashMap<String, ArrayList<ChatMessage>> getUserMessages() {
 		return userMessages;
 	}
 	
+	/**
+	 * Log some text!
+	 * 
+	 * @param msg
+	 */
 	public static void log(String msg) {
 		System.out.println(new SimpleDateFormat("HH:mm:ss").format(new Date()) + " " + msg);
 	}
 	
+	/**
+	 * Method with a stupid abbrevation for "Default" that checks for the 
+	 * default files and folders like "plugins" and "config/settings.cfg" etc.
+	 * 
+	 */
 	private static void checkForDefFilesAndFolders() {
 		if (!configFolder.isDirectory()) {
 			log("config/ is not a directory! Creating it...");
@@ -138,8 +177,19 @@ public class SkypeBot {
 		}
 	}
 	
-	public static File getPluginsFolder(){ return pluginsFolder; }
+	/**
+	 * Get the plugins folder
+	 * 
+	 * @return the plugins folder
+	 */
+	public static File getPluginsFolder(){ 
+		return pluginsFolder; 
+	}
 	
+	/**
+	 * Initializes the Skype event listeners
+	 * 
+	 */
 	private static void registerSkype() {
 		try {			
 			Skype.addChatMessageListener(new BotMessageListener());
@@ -156,6 +206,13 @@ public class SkypeBot {
 		}
 	}
 	
+	/**
+	 * The method plugins should use for chatting unless they absolutely need to
+	 * chat directly.
+	 * 
+	 * @param c The Skype chat you want to send the message to
+	 * @param m The message you want to send
+	 */
 	public static void chat(Chat c, String m) {
 		try {
 			c.send(SkypeBot.getSettingValue("skypeBotPrefix") + " " + m);

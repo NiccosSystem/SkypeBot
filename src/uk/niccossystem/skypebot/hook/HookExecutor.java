@@ -10,6 +10,12 @@ import uk.niccossystem.skypebot.plugin.Plugin;
 import uk.niccossystem.skypebot.plugin.PluginListener;
 import uk.niccossystem.skypebot.plugin.RegisteredPluginListener;
 
+/**
+ * Handles calling of hooks and registering of listeners
+ * 
+ * @author NiccosSystem
+ *
+ */
 public class HookExecutor {
 	HashMap<Class<? extends Hook>, ArrayList<RegisteredPluginListener>> listeners = new HashMap<Class<? extends Hook>, ArrayList<RegisteredPluginListener>>();
 	public void registerListener(PluginListener l, Plugin p) {

@@ -3,6 +3,12 @@ package uk.niccossystem.skypebot.command;
 import uk.niccossystem.skypebot.SkypeBot;
 import uk.niccossystem.skypebot.plugin.Plugin;
 
+/**
+ * Internal plugin for native commands
+ * 
+ * @author NiccosSystem
+ *
+ */
 public class NativeCommands extends Plugin {
 
 	@Override

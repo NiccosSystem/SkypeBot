@@ -19,24 +19,17 @@ import java.lang.annotation.Target;
 public @interface Command {
 	
 	/**
-	 * The command's name
+	 * The name of the command, what phrase should call the command?
 	 * 
-	 * @return
+	 * @return the command's name
 	 */
 	public String name();
 	
 	/**
-	 * The command's help text
+	 * The help text for the command, what the "commands" command will show
 	 * 
-	 * @return
+	 * @return the command's help text
 	 */
 	public String help();
-	
-//	/**
-//	 * The command's permission
-//	 * 
-//	 * @return
-//	 */
-//	public String permission();
 	
 }

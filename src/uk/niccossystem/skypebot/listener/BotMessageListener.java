@@ -4,14 +4,18 @@ import java.util.ArrayList;
 
 import uk.niccossystem.skypebot.SkypeBot;
 import uk.niccossystem.skypebot.hook.chat.ChatHook;
-import uk.niccossystem.skypebot.hook.command.CommandHook;
 import uk.niccossystem.skypebot.command.CommandContainer;
-import uk.niccossystem.skypebot.command.ListCommands;
 
 import com.skype.ChatMessage;
 import com.skype.ChatMessageListener;
 import com.skype.SkypeException;
 
+/**
+ * Listens for messages and calls the respective hooks
+ * 
+ * @author NiccosSystem
+ *
+ */
 public class BotMessageListener implements ChatMessageListener {
 	
 	private ArrayList<ChatMessage> receivedCMessages = new ArrayList<ChatMessage>();
@@ -37,7 +41,7 @@ public class BotMessageListener implements ChatMessageListener {
 			ArrayList<ChatMessage> initList = new ArrayList<ChatMessage>();
 			initList.add(cMessage);
 			SkypeBot.getUserMessages().put(cMessage.getSenderId(), initList);			
-		}		
+		}
 		
 		if (message.startsWith(SkypeBot.getSettingValue("commandPrefix"))) {
 			CommandContainer cC = new CommandContainer(cMessage);
@@ -46,22 +50,5 @@ public class BotMessageListener implements ChatMessageListener {
 		}
 		ChatHook cH = new ChatHook(cMessage);
 		SkypeBot.hooks().callHook(cH);
-	}
-
-//	private boolean callNativeCommands(CommandHook cmdHook) {
-//		switch (cmdHook.getCommand()) {
-//		case "listcommands":
-//			ListCommands.onCommand(cmdHook);
-//			return true;
-//		case "unq":
-//			try {
-//				cmdHook.getChat().send(SkypeBot.getUniqueId());
-//			} catch (SkypeException e) {
-//				e.printStackTrace();
-//			}
-//		default:
-//			break;
-//		}
-//		return false;
-//	}		
+	}	
 }

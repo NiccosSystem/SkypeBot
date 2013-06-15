@@ -14,9 +14,9 @@ public abstract class BotCommand {
 	}
 	
 	/**
-	 * Returns the command's Command annotation
+	 * The Command annotation of the command.
 	 * 
-	 * @return
+	 * @return the command's Command annotation
 	 */
 	public Command getCommandAnno() {
 		return commandAnno;
