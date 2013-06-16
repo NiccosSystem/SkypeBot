@@ -1,5 +1,6 @@
 config/
 target/
+doc/
 .settings/
 bin/
 plugins/
