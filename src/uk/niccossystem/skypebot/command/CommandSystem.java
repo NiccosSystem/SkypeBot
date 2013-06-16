@@ -4,11 +4,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
-import com.skype.SkypeException;
-
 import uk.niccossystem.skypebot.SkypeBot;
 import uk.niccossystem.skypebot.plugin.Plugin;
-import uk.niccossystem.skypebot.plugin.PluginListener;
 
 /**
  * Handles execution of commands, bot-wide

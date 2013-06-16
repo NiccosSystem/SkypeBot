@@ -2,8 +2,6 @@ package uk.niccossystem.skypebot.command;
 
 import java.util.HashMap;
 
-import com.skype.SkypeException;
-
 import uk.niccossystem.skypebot.SkypeBot;
 
 /**

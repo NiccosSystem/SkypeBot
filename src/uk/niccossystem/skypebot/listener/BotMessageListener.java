@@ -18,12 +18,15 @@ import com.skype.SkypeException;
  */
 public class BotMessageListener implements ChatMessageListener {
 	
-	private ArrayList<ChatMessage> receivedCMessages = new ArrayList<ChatMessage>();
+	private ArrayList<String> receivedCMessages = new ArrayList<String>();
 	
 	@Override
 	public void chatMessageReceived(ChatMessage arg0) throws SkypeException {
-		if (receivedCMessages.contains(arg0)) return;
-		receivedCMessages.add(arg0);		
+		if (receivedCMessages.contains(arg0.getId())) {
+			receivedCMessages.remove(arg0.getId());
+			return;
+		}
+		receivedCMessages.add(arg0.getId());		
 		handleMessage(arg0);
 	}
 
@@ -35,19 +38,12 @@ public class BotMessageListener implements ChatMessageListener {
 	public void handleMessage(ChatMessage cMessage) throws SkypeException {		
 		String message = cMessage.getContent();
 		
-		if (SkypeBot.getUserMessages().get(cMessage.getSenderId()) != null) {
-			SkypeBot.getUserMessages().get(cMessage.getSenderId()).add(cMessage);
-		} else {
-			ArrayList<ChatMessage> initList = new ArrayList<ChatMessage>();
-			initList.add(cMessage);
-			SkypeBot.getUserMessages().put(cMessage.getSenderId(), initList);			
-		}
-		
 		if (message.startsWith(SkypeBot.getSettingValue("commandPrefix"))) {
 			CommandContainer cC = new CommandContainer(cMessage);
 			SkypeBot.cmds().executeCommand(cC);
 			return;
 		}
+		
 		ChatHook cH = new ChatHook(cMessage);
 		SkypeBot.hooks().callHook(cH);
 	}	

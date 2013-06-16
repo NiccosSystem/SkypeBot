@@ -2,9 +2,7 @@ package uk.niccossystem.skypebot;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 
 import net.visualillusionsent.utils.PropertiesFile;
 
@@ -15,7 +13,6 @@ import uk.niccossystem.skypebot.listener.*;
 import uk.niccossystem.skypebot.plugin.PluginLoader;
 
 import com.skype.Chat;
-import com.skype.ChatMessage;
 import com.skype.Skype;
 import com.skype.SkypeException;
 
@@ -32,7 +29,6 @@ public class SkypeBot {
 	private static final String version = "ALPHA 0.1";
 	private static PropertiesFile settings;
 	private static File pluginsFolder;
-	private static HashMap<String, ArrayList<ChatMessage>> userMessages; 
 	private static String defaultPluginCFG;
 	private static PluginLoader pLoader;
 	
@@ -64,7 +60,6 @@ public class SkypeBot {
 	 *  
 	 */
 	private static void initializeVariables() {
-		userMessages = new HashMap<String, ArrayList<ChatMessage>>();
 		defaultPluginCFG = "SkypeBotPlugin.cfg";
 		pluginsFolder = new File("plugins/");
 		configFolder = new File("config/");
@@ -129,15 +124,6 @@ public class SkypeBot {
 		pLoader = new PluginLoader();
 		pLoader.scanForPlugins();
 		pLoader.enableAllPlugins();
-	}
-	
-	/**
-	 * Get a user's messages (I don't think this is implemented yet)
-	 * 
-	 * @return a user's messages
-	 */
-	public static HashMap<String, ArrayList<ChatMessage>> getUserMessages() {
-		return userMessages;
 	}
 	
 	/**
