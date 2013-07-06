@@ -12,5 +12,5 @@ Some chunks of code (Most notably in the Plugin department) are similar - if not
 
 
 IMPORTANT:
-This project uses darkdiplomat's VIUtils. The project's GitHub is https://github.com/Visual-Illusions/viutils
-A LOT of thanks go to him for making stuff easier for me :-)
+This project uses Visual Illusions Entertainment's (Darkdiplomat) VIUtils. The project's GitHub is https://github.com/Visual-Illusions/viutils
+A LOT of thanks go to them for making stuff easier for me :-)
