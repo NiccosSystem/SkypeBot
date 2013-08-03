@@ -3,7 +3,7 @@
   <groupId>net.niccossystem</groupId>
   <artifactId>SkypeBot</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>SkypeBotRecode</name>
+  <name>SkypeBot</name>
   <description>A recode of my SkypeBot</description>
   <build>
     <sourceDirectory>src/main/java</sourceDirectory>

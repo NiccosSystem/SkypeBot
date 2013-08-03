@@ -39,7 +39,6 @@ public class BotMessageListener implements ChatMessageListener {
         if (message.startsWith(SkypeBot.getSettingValue("commandPrefix"))) {
             CommandContainer cC = new CommandContainer(cMessage);
             SkypeBot.cmds().executeCommand(cC);
-            return;
         }
 
         ChatHook cH = new ChatHook(cMessage);

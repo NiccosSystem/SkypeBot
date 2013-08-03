@@ -17,11 +17,17 @@ public class CommandSystem {
     private final HashMap<String, BotCommand> commands = new HashMap<String, BotCommand>();
 
     public void executeCommand(CommandContainer cContainer) {
-        if (!commands.containsKey(cContainer.getCommand())) {
+        BotCommand cmd = null;
+        for (String command : commands.keySet()) {
+            if (command.equalsIgnoreCase(cContainer.getCommand())) {
+                cmd = commands.get(command);
+            }
+        }
+//        BotCommand cmd = commands.get(cContainer.getCommand());
+        if (cmd == null) {
             commandNotFound(cContainer);
             return;
         }
-        BotCommand cmd = commands.get(cContainer.getCommand());
         cmd.execute(cContainer);
         return;
     }
