@@ -21,7 +21,6 @@ public class CommandContainer {
     private final User sender;
     private final Chat chat;
     private final Date date;
-    private final ChatMessage message;
     private final String command;
 
     public CommandContainer(ChatMessage cMsg) throws SkypeException {
@@ -30,8 +29,17 @@ public class CommandContainer {
         sender = cMsg.getSender();
         chat = cMsg.getChat();
         date = cMsg.getTime();
-        message = cMsg;
         command = cMsg.getContent().split(" ")[0].trim().substring(SkypeBot.getSettingValue("commandPrefix").length(), cMsg.getContent().split(" ")[0].length());
+    }
+    
+    public CommandContainer(String[] parameters, String senderDisplayName, String command) {
+        this.parameters = parameters;
+        this.senderDisplayName = senderDisplayName;
+        this.command = command;
+        
+        this.sender = null;
+        this.date = null;
+        this.chat = null;
     }
 
     /**
@@ -96,14 +104,14 @@ public class CommandContainer {
         return date;
     }
 
-    /**
-     * Get the ChatMessage object itself, should not be needed in most cases
-     * 
-     * @return the message which contained the command
-     */
-    public ChatMessage getChatMessage() {
-        return message;
-    }
+//    /**
+//     * Get the ChatMessage object itself, should not be needed in most cases
+//     * 
+//     * @return the message which contained the command
+//     */
+//    public ChatMessage getChatMessage() {
+//        return message;
+//    }
 
     /**
      * Get the command, plugins really don't have any use of this.
