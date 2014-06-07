@@ -1,13 +1,19 @@
 package net.niccossystem.skypebot.plugin;
 
 import java.io.File;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import net.niccossystem.skypebot.SkypeBot;
-import net.visualillusionsent.utils.PropertiesFile;
 
 /**
  * Loads plugins in the plugins folder.
@@ -17,16 +23,21 @@ import net.visualillusionsent.utils.PropertiesFile;
  */
 public class PluginLoader {
 
-    private final ArrayList<Plugin> plugins;
-    private final ArrayList<String> pluginsToLoad;
-    private final HashMap<String, String> realJars;
-    private final HashMap<String, URLClassLoader> loadList;
+    private final List<Plugin> plugins;
+    private final List<String> pluginsToLoad;
+    private final List<Plugin> enabledPlugins;
+    private final Map<String, String> realJars;
+    private final Map<String, URLClassLoader> loadList;
+    
+    private JsonParser jsonParser;
 
     public PluginLoader() {
         plugins = new ArrayList<Plugin>();
+        enabledPlugins = new ArrayList<Plugin>();
         realJars = new HashMap<String, String>();
         loadList = new HashMap<String, URLClassLoader>();
         pluginsToLoad = new ArrayList<String>();
+        jsonParser = new JsonParser();
     }
 
     public void scanForPlugins() {
@@ -78,25 +89,29 @@ public class PluginLoader {
     }
 
     private boolean load(String pluginName, URLClassLoader jar) {
-        String mainClass = "";
+        String main = "";
+        if (jar.getResourceAsStream("plugin.json") == null) {
+        	SkypeBot.log(String.format("Plugin %s does not have a plugin.json file!", pluginName));
+        	return false;
+        }
         try {
-            PropertiesFile pluginCfg = new PropertiesFile("plugins/" + pluginName, "SkypeBotPlugin.cfg");
+        	JsonObject pluginSettings = jsonParser.parse(new InputStreamReader(jar.getResourceAsStream("plugin.json"))).getAsJsonObject();
 
-            if (!pluginCfg.containsKey("mainClass")) {
-                SkypeBot.log("No mainClass attribute in SkypeBotPlugin.cfg! Plugin: " + pluginName);
+            if (!pluginSettings.has("main")) {
+                SkypeBot.log("No main attribute in plugin.json! Plugin: " + pluginName);
                 return false;
             }
-            mainClass = pluginCfg.getString("mainClass");
+            main = pluginSettings.get("main").getAsString();
 
-            if (getPlugin(mainClass) != null) {
+            if (getPlugin(main) != null) {
                 SkypeBot.log("Plugin " + pluginName + " already loaded!");
                 return false;
             }
 
-            Class<?> pluginClass = jar.loadClass(mainClass);
+            Class<?> pluginClass = jar.loadClass(main);
             Plugin plugin = (Plugin) pluginClass.newInstance();
 
-            plugin.setLoader(jar, pluginCfg, pluginName);
+            plugin.setLoader(jar, pluginSettings, pluginName);
 
             plugins.add(plugin);
         }
@@ -126,10 +141,10 @@ public class PluginLoader {
             File file = new File("plugins/" + plugin.getJarName());
             URLClassLoader loader = new URLClassLoader(new URL[] { file.toURI().toURL() }, Thread.currentThread().getContextClassLoader());
             String pluginName = plugin.getJarName();
-            PropertiesFile pluginConfig = new PropertiesFile("plugins/" + pluginName, SkypeBot.getDefaultPluginCFG());
+            JsonObject pluginSettings = jsonParser.parse(new InputStreamReader(loader.getResourceAsStream("plugin.json"))).getAsJsonObject();
             Class<?> cls = loader.loadClass(plugin.getClass().getName());
             plugin = (Plugin) cls.newInstance();
-            plugin.setLoader(loader, pluginConfig, pluginName);
+            plugin.setLoader(loader, pluginSettings, pluginName);
             enabled = plugin.enable();
         }
         catch (Throwable t) {
@@ -145,6 +160,7 @@ public class PluginLoader {
         for (Plugin plugin : plugins) {
             if (enablePlugin(plugin)) {
                 count++;
+                enabledPlugins.add(plugin);
             }
         }
         SkypeBot.log("Enabled " + count + " plugins!");
@@ -157,5 +173,9 @@ public class PluginLoader {
             }
         }
         return null;
+    }
+    
+    public List<Plugin> getEnabledPlugins() {
+    	return enabledPlugins;
     }
 }

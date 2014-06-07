@@ -15,6 +15,12 @@ import net.niccossystem.skypebot.plugin.Plugin;
 public class CommandSystem {
 
     private final HashMap<String, BotCommand> commands = new HashMap<String, BotCommand>();
+    
+    private String commandPrefix;
+    
+    public CommandSystem() {
+    	commandPrefix = SkypeBot.getSettingsFile().get("commandPrefix").getAsString();
+    }
 
     public void executeCommand(CommandContainer cContainer) {
         BotCommand cmd = null;
@@ -33,7 +39,7 @@ public class CommandSystem {
     }
 
     private void commandNotFound(CommandContainer c) {
-        SkypeBot.chat(c.getChat(), "Command not found! Do " + SkypeBot.getSettingValue("commandPrefix") + "commands to see a list of commands.");
+        SkypeBot.chat(c.getChat(), String.format("Command not found! Do %scommands to see a list of commands.", commandPrefix));
         return;
     }
 

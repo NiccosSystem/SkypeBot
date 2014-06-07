@@ -1,7 +1,8 @@
 package net.niccossystem.skypebot.plugin;
 
 import java.net.URLClassLoader;
-import net.visualillusionsent.utils.PropertiesFile;
+
+import com.google.gson.JsonObject;
 
 /**
  * The base plugin class. Extend this in your main plugin class.
@@ -16,7 +17,7 @@ public abstract class Plugin {
     public abstract String version();
 
     private URLClassLoader loader;
-    private PropertiesFile props;
+    private JsonObject settings;
     private String jarName = "";
 
     public abstract boolean enable();
@@ -29,25 +30,17 @@ public abstract class Plugin {
         return jarName;
     }
 
-    public String getAuthor() {
-        return author();
-    }
-
-    public String getVersion() {
-        return version();
-    }
-
     public URLClassLoader getLoader() {
         return loader;
     }
 
-    public PropertiesFile getPropertiesFile() {
-        return props;
+    public JsonObject getSettings() {
+        return settings;
     }
 
-    public void setLoader(URLClassLoader jarLoader, PropertiesFile propFile, String newJarName) {
+    public void setLoader(URLClassLoader jarLoader, JsonObject pluginSettings, String newJarName) {
         loader = jarLoader;
-        props = propFile;
+        settings = pluginSettings;
         jarName = newJarName;
     }
 }

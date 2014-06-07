@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.niccossystem</groupId>
   <artifactId>SkypeBot</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.1.2-SNAPSHOT</version>
   <name>SkypeBot</name>
   <description>A recode of my SkypeBot</description>
   <build>
@@ -54,10 +54,10 @@
 	  <artifactId>skype-java-api</artifactId>
 	  <version>1.4</version>
      </dependency>
-     <dependency>
-	    <groupId>net.visualillusionsent</groupId>
-	    <artifactId>viutils</artifactId>
-	    <version>1.0.4-SNAPSHOT</version>
-     </dependency>
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.2.4</version>
+    </dependency>
   </dependencies>
 </project>

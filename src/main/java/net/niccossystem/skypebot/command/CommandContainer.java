@@ -29,7 +29,7 @@ public class CommandContainer {
         sender = cMsg.getSender();
         chat = cMsg.getChat();
         date = cMsg.getTime();
-        command = cMsg.getContent().split(" ")[0].trim().substring(SkypeBot.getSettingValue("commandPrefix").length(), cMsg.getContent().split(" ")[0].length());
+        command = cMsg.getContent().split(" ")[0].trim().substring(SkypeBot.getSettingsFile().get("commandPrefix").getAsString().length(), cMsg.getContent().split(" ")[0].length());
     }
     
     public CommandContainer(String[] parameters, String senderDisplayName, String command) {

@@ -36,7 +36,7 @@ public class BotMessageListener implements ChatMessageListener {
     public void handleMessage(ChatMessage cMessage) throws SkypeException {
         String message = cMessage.getContent();
 
-        if (message.startsWith(SkypeBot.getSettingValue("commandPrefix"))) {
+        if (message.startsWith(SkypeBot.getSettingsFile().get("commandPrefix").getAsString())) {
             CommandContainer cC = new CommandContainer(cMessage);
             SkypeBot.cmds().executeCommand(cC);
         }
